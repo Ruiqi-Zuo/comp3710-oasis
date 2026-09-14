@@ -1,0 +1,34 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# --- Data: OASIS is read in place on Rangpur and never copied here ---
+data/*
+!data/.gitkeep
+
+# --- Experiment outputs (figures worth keeping go in docs/figures/) ---
+outputs/*
+!outputs/.gitkeep
+*.pth
+*.pt
+*.ckpt
+runs/
+wandb/
+
+# --- SLURM logs ---
+slurm-*.out
+slurm-*.err
+
+# --- Archives used to move code to the cluster ---
+*.tgz
+*.tar.gz
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

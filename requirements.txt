@@ -1,0 +1,17 @@
+# Deep learning. On Rangpur the pip wheels bundle their own CUDA runtime.
+torch>=2.1
+torchvision>=0.16
+
+# Scientific stack
+numpy>=1.24
+scipy>=1.10        # Task 1: inverse Gaussian CDF for the latent-grid manifold
+pillow>=9          # OASIS slices are PNG
+matplotlib>=3.7
+
+# Utilities
+scikit-learn>=1.3  # Task 1: t-SNE route for a higher-dimensional latent space
+tqdm>=4.65
+
+# Optional, Task 1 UMAP route only. Pulls in numba, which pins numpy versions —
+# install into a separate environment if it conflicts.
+# umap-learn>=0.5

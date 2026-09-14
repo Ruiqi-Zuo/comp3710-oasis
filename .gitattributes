@@ -1,0 +1,6 @@
+# The code runs on Linux (Rangpur). Store and check out text files with LF so
+# that SLURM scripts stay valid even when edited or checked out on Windows:
+# sbatch rejects scripts with CRLF line endings.
+* text=auto eol=lf
+*.png binary
+*.pth binary
