@@ -5,7 +5,7 @@ COMP3710 Lab 2 at the University of Queensland.
 
 | Task | Model | Goal | Status |
 |------|-------|------|--------|
-| [1](part4_recognition/task1_vae_oasis/README.md) | Variational autoencoder | Train, and visualise the learned latent manifold | not started |
+| [1](part4_recognition/task1_vae_oasis/README.md) | Variational autoencoder | Train, and visualise the learned latent manifold | code done, awaiting Rangpur run |
 | [2](part4_recognition/task2_unet_oasis/README.md) | UNet | Segment brain tissue with DSC > 0.9 for **every** label | not started |
 | [3](part4_recognition/task3_gan_oasis/README.md) | GAN | Generate realistic, distinct brains | deferred |
 
