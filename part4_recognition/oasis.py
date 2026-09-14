@@ -33,6 +33,7 @@ OASIS_ROOT = os.environ.get("OASIS_ROOT", "/home/groups/comp3710/OASIS")
 # background, CSF, grey matter, white matter.
 N_SEG_CLASSES = 4
 MASK_GREY_LEVELS = (0, 85, 170, 255)
+CLASS_NAMES = ("background", "CSF", "grey matter", "white matter")
 
 SPLITS = ("train", "validate", "test")
 

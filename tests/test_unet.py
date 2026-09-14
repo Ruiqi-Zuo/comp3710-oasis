@@ -125,6 +125,25 @@ def test_dice_loss_weights_classes_equally():
     assert math.isclose(loss.item(), 1 - (19801 / 19901 + 1 / 101) / 2, abs_tol=1e-4)
 
 
+def test_flip_augmentation_keeps_image_and_mask_aligned():
+    """After augmentation every mask must still be the mask of its own image."""
+    from part4_recognition.task2_unet_oasis.dataset import random_hflip
+
+    torch.manual_seed(3)
+    images = torch.rand(32, 1, 16, 16)
+    masks = (images.squeeze(1) * N_CLASSES).long().clamp(max=N_CLASSES - 1)   # mask = f(image)
+    images_before, masks_before = images.clone(), masks.clone()
+
+    flipped_images, flipped_masks = random_hflip(images, masks)
+
+    rederived = (flipped_images.squeeze(1) * N_CLASSES).long().clamp(max=N_CLASSES - 1)
+    assert torch.equal(rederived, flipped_masks)
+    changed = (flipped_images != images).flatten(1).any(dim=1)
+    assert 0 < changed.sum() < 32                      # some flipped, some not
+    # The caller's tensors must not be modified in place.
+    assert torch.equal(images, images_before) and torch.equal(masks, masks_before)
+
+
 def test_combined_loss_is_the_sum_of_its_parts():
     target = torch.randint(0, N_CLASSES, (2, 16, 16))
     logits = torch.randn(2, N_CLASSES, 16, 16)
