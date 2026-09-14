@@ -26,17 +26,21 @@ export OASIS_ROOT=/home/groups/comp3710/OASIS
 
 nvidia-smi
 
-# Pick ONE task by leaving its lines uncommented. Each trains and then runs its
-# predict script on the checkpoint it just wrote, so the figures are ready when
-# the job finishes.
-
-# Task 1 - VAE: train, then draw the manifold figures
-python -m part4_recognition.task1_vae_oasis.train
-python -m part4_recognition.task1_vae_oasis.predict
-
-# Task 2 - UNet
-# python -m part4_recognition.task2_unet_oasis.train
-# python -m part4_recognition.task2_unet_oasis.predict
-
-# Task 3 - GAN (deferred)
-# python -m part4_recognition.task3_gan_oasis.train
+# Choose the task on the command line instead of editing this file on the
+# cluster:   sbatch scripts/oasis.slurm vae    |    sbatch scripts/oasis.slurm unet
+# Each trains and then runs its predict script on the checkpoint it just wrote,
+# so the figures exist as soon as the job finishes.
+case "${1:-}" in
+    vae)
+        python -m part4_recognition.task1_vae_oasis.train
+        python -m part4_recognition.task1_vae_oasis.predict
+        ;;
+    unet)
+        python -m part4_recognition.task2_unet_oasis.train
+        python -m part4_recognition.task2_unet_oasis.predict
+        ;;
+    *)
+        echo "usage: sbatch scripts/oasis.slurm {vae|unet}" >&2
+        exit 2
+        ;;
+esac

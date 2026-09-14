@@ -3,7 +3,7 @@
 | Script | Purpose |
 |---|---|
 | `probe_oasis.py` | Survey a dataset directory: layout, file formats, image sizes, and a pixel census of label masks. Read-only. |
-| `oasis.slurm` | SLURM job that runs one Part 4 task on a GPU node. Choose the task by editing its last lines. |
+| `oasis.slurm` | SLURM job that trains one Part 4 task on a GPU node and then runs its predict script. The task is a command-line argument. |
 
 ## probe_oasis.py
 
@@ -19,8 +19,13 @@ environment, so no interactive shell is needed.
 Submit from the repository root — the job uses relative paths:
 
 ```bash
-sbatch scripts/oasis.slurm
+sbatch -J vae  scripts/oasis.slurm vae
+sbatch -J unet scripts/oasis.slurm unet
 ```
+
+The task is passed as an argument, so nothing needs editing on the cluster.
+`-J` only names the job in `squeue`. With no argument or an unknown one, the job
+prints its usage and exits immediately.
 
 The job writes to `outputs/`, which must already exist when the job is
 submitted: SLURM does not create the directory, and a missing one makes the job

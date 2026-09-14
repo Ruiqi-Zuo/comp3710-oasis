@@ -71,7 +71,7 @@ Adam at 1e-3, batch 64, 50 epochs, fp32. Mixed precision is not used:
 
 ```bash
 # on Rangpur: trains, then writes all figures
-sbatch scripts/oasis.slurm
+sbatch -J vae scripts/oasis.slurm vae
 
 # or directly
 python -m part4_recognition.task1_vae_oasis.train
