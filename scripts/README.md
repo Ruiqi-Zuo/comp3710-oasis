@@ -27,7 +27,21 @@ submitted: SLURM does not create the directory, and a missing one makes the job
 fail without writing any log. The repository ships `outputs/.gitkeep` for that
 reason.
 
-The partition, CPU, memory and time requests must fit the limits of the
-`comp3710` partition. A job that exceeds them is not rejected; it sits in the
-queue forever with reason `(PartitionConfig)`. Check the limits with
-`scontrol show partition comp3710`.
+### Why the job requests look the way they do
+
+A job the `comp3710` partition will not admit is **not rejected** — it is
+accepted and then sits in the queue forever with reason `(PartitionConfig)`.
+Two things cause that here, both found by submitting one-variable test jobs:
+
+* **`--account=comp3710` is mandatory.** The partition has
+  `AllowAccounts=comp3710`, and jobs are not charged to that account by
+  default. Without the flag, even a bare `sbatch -p comp3710 --gres=gpu:1`
+  never starts.
+* **No `--mem`.** The partition registers about 1 MB of memory per node
+  (`TRES=...,mem=10M` across 10 nodes), so memory is not a real schedulable
+  resource and a request for it can only make the job unsatisfiable.
+
+Each node is one A100 with 8 CPUs, so `--cpus-per-task` should stay at 8 or
+below. After submitting, `squeue --me` should show `Priority`, `Resources` or
+`RUNNING`; `PartitionConfig` means a request is still wrong. Inspect the limits
+with `scontrol show partition comp3710`.

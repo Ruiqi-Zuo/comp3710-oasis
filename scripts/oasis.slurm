@@ -1,10 +1,15 @@
 #!/bin/bash
 #SBATCH --job-name=oasis
 #SBATCH --partition=comp3710
+#SBATCH --account=comp3710
+# --account is required: the comp3710 partition only admits jobs charged to
+# the comp3710 account, and without it SLURM holds the job forever with
+# reason (PartitionConfig). No --mem request: the partition registers ~1 MB
+# per node, so memory is not a schedulable resource here and a request can
+# only make the job unsatisfiable.
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=16G
-#SBATCH --time=04:00:00
+#SBATCH --time=01:00:00
 #SBATCH --output=outputs/slurm-%j.out
 #SBATCH --error=outputs/slurm-%j.err
 
