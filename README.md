@@ -55,6 +55,7 @@ That imbalance is why Task 2 cannot rely on cross entropy alone.
 │   ├── task2_unet_oasis/   # UNet segmentation
 │   └── task3_gan_oasis/    # GAN brain generation
 ├── scripts/                # SLURM job script and the dataset survey tool
+├── tests/                  # tests on a synthetic OASIS tree (no real data needed)
 ├── data/                   # git-ignored
 └── outputs/                # checkpoints, figures, logs (git-ignored)
 ```
@@ -62,6 +63,17 @@ That imbalance is why Task 2 cannot rely on cross entropy alone.
 Each task follows the COMP3710 report convention: `modules.py` (model),
 `dataset.py` (data), `train.py` (training), `predict.py` (inference), and a
 `README.md` covering the problem, method and results.
+
+## Tests
+
+The real dataset cannot leave Rangpur, so the loaders are tested against a small
+synthetic tree with the same file names, split structure and label encoding
+(`tests/fake_oasis.py`). These run anywhere, in a few seconds:
+
+```bash
+python -m pytest tests        # or, without pytest:
+python -m tests.test_oasis
+```
 
 ## Running on Rangpur
 
