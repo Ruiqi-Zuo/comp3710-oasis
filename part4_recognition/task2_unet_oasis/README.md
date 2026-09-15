@@ -99,6 +99,21 @@ all 544 slices of the 17 held-out subjects:
 **Every label exceeds 0.9, and so does every label for every one of the 17 test
 subjects.**
 
+### Training run
+
+| | |
+|---|---|
+| Epoch kept (best worst-class validation DSC) | 37 of 40 |
+| Validation DSC at that epoch | 0.9994 / 0.9621 / 0.9673 / 0.9801 (worst: CSF 0.9621) |
+| Training time (A100) | 684.1 s, about 17 s per epoch |
+| Inference on the 544 test slices | 1.03 s, 529 slices/s |
+
+The test scores are as good as the validation scores that chose the checkpoint
+— worst class 0.9658 on test against 0.9621 on validation, and within 0.004 on
+every label. Selecting one epoch out of 40 on validation has therefore not
+flattered the result: the model generalises to the unseen test subjects as well
+as to the validation subjects it was selected on.
+
 ### Per subject
 
 | Label | Mean over subjects | SD | Lowest | Highest | Worst class for |
