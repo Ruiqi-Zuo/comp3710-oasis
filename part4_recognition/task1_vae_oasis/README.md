@@ -85,16 +85,31 @@ python -m part4_recognition.task1_vae_oasis.predict --root ~/fake_oasis --grid 1
 
 ## Results
 
-_To be filled from the Rangpur run._
+Trained on Rangpur (NVIDIA A100-PCIE-40GB), 50 epochs, latent dimension 2.
 
 | Metric | Value |
 |---|---|
-| Final validation -ELBO | |
-| of which reconstruction | |
-| of which KL | |
-| Active latent units | / 2 |
-| Test posterior means inside the grid extent | |
-| Training time (A100) | |
+| Final validation -ELBO | 4253.3 |
+| of which reconstruction (BCE, summed over 16,384 pixels) | 4246.7 |
+| of which KL | 6.54 |
+| Training reconstruction, final epoch | 4149.2 |
+| Active latent units | **2 / 2** at every epoch after the warm-up |
+| Test posterior means inside the grid extent | 65.3% |
+| Training time (A100) | 98.2 s (about 1.8 s per epoch) |
+
+**No posterior collapse.** Both latent dimensions stay active and the KL settles
+at about 6.5 nats rather than decaying towards zero.
+
+**Converged, not overfitting.** Training reconstruction improved by under 0.2%
+over the last 15 epochs (4157.6 to 4149.2) while validation held flat around
+4240, a gap of 2.3%. With two latent dimensions the bottleneck, not the number
+of epochs, limits the reconstruction.
+
+**The grid covers less of the data than the prior would suggest.** The manifold
+grid spans the central 90% of the prior on each axis, so if the posterior means
+followed N(0, I), 0.9 x 0.9 = 81% of them would fall inside it. Only 65.3% do:
+the encoder spreads its means more widely than the prior, and about a third of
+the test slices are encoded outside the plotted region.
 
 | Artefact | Path |
 |----------|------|

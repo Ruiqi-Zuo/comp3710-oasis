@@ -86,25 +86,42 @@ python -m part4_recognition.task2_unet_oasis.predict --root ~/fake_oasis
 
 ## Results
 
-_To be filled from the Rangpur run._
+Trained on Rangpur (NVIDIA A100-PCIE-40GB). Test set, DSC counts summed over
+all 544 slices of the 17 held-out subjects:
 
-Test set, DSC counts summed over all 544 slices:
+| Label | DSC | |
+|-------|-----|---|
+| Background | 0.9993 | pass |
+| CSF | **0.9658** | pass — lowest |
+| Grey matter | 0.9666 | pass |
+| White matter | 0.9799 | pass |
 
-| Label | DSC |
-|-------|-----|
-| Background | |
-| CSF | |
-| Grey matter | |
-| White matter | |
+**Every label exceeds 0.9, and so does every label for every one of the 17 test
+subjects.**
 
-All four must exceed 0.9.
+### Per subject
 
-| | |
-|---|---|
-| Epoch kept (best worst-class validation DSC) | |
-| Test subjects with every class > 0.9 | / 17 |
-| Training time (A100) | |
-| Inference throughput | slices/s |
+| Label | Mean over subjects | SD | Lowest | Highest | Worst class for |
+|---|---|---|---|---|---|
+| Background | 0.9993 | 0.0002 | 0.9989 | 0.9997 | 0 subjects |
+| CSF | 0.9591 | **0.0221** | **0.9060** (subject 448) | 0.9843 | 6 subjects |
+| Grey matter | 0.9662 | 0.0075 | 0.9485 (subject 449) | 0.9765 | **11 subjects** |
+| White matter | 0.9798 | 0.0059 | 0.9686 | 0.9872 | 0 subjects |
+
+"CSF is the hardest class" is only half true here, and the per-subject view is
+what shows it:
+
+* **Grey matter is the usual weak point** — the worst class for 11 of the 17
+  brains — but it fails mildly and consistently (SD 0.0075, never below 0.948).
+* **CSF is the least reliable.** Its spread across brains is three times that of
+  grey matter, and it produces the two lowest scores anywhere in the table
+  (0.9060 and 0.9145). It is the worst class less often than grey matter, but
+  when it is, it is by the widest margin.
+* **Pooled CSF (0.9658) is higher than the per-subject mean (0.9591).** Pooling
+  counts weights each brain roughly by its CSF volume, so the brains with the
+  most CSF are also the ones where CSF is segmented best. The closest call in
+  the whole test set, subject 448 at 0.906, is therefore invisible in the pooled
+  figure — which is exactly why the per-subject table is reported.
 
 | Artefact | Path |
 |----------|------|
@@ -129,8 +146,13 @@ All four must exceed 0.9.
 * **Why nearest-neighbour interpolation for masks?** Bilinear resizing averages
   label indices and creates classes that do not exist. This implementation
   sidesteps the problem by never resizing at all.
-* **Which class is hardest, and why?** Usually CSF — thin, low-contrast, and the
-  smallest by volume. Report it honestly rather than hiding it in the mean.
+* **Which class is hardest, and why?** It depends what "hardest" means, and the
+  measured answer differs from the usual one. CSF has the lowest pooled DSC and
+  by far the largest spread across brains — it is thin, low-contrast and the
+  smallest class, so a brain with little of it is easy to get proportionally
+  wrong. But grey matter is the worst class for more subjects (11 of 17): it
+  sits between CSF and white matter, so every one of its boundaries is a
+  tissue-tissue boundary. Report both rather than hiding either in the mean.
 * **Why keep the checkpoint by the worst class rather than the mean?** The mean
   is dominated by background and the large tissues. A later epoch can raise the
   mean while CSF slips below 0.9, and that epoch fails the requirement.
